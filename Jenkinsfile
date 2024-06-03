@@ -1,21 +1,54 @@
 pipeline {
     agent any
-
     stages {
-        stage('Build') {
+        stage("Verify tooling") {
             steps {
-                echo 'Building..'
+                sh '''
+                    docker info
+                    docker version
+                    docker compose version
+                '''
             }
         }
-        stage('Test') {
+        stage("Clear all running docker containers") {
             steps {
-                echo 'Testing..'
+                script {
+                    try {
+                        sh 'docker rm -f $(docker ps -a -q)'
+                    } catch (Exception e) {
+                        echo 'No running container to clear up...'
+                    }
+                }
             }
         }
-        stage('Deploy') {
+        stage("Start Docker") {
             steps {
-                echo 'Deploying....'
+                sh 'make up'
+                sh 'docker compose ps'
             }
+        }
+        stage("Run Composer Install") {
+            steps {
+                sh 'docker compose run --rm composer install'
+            }
+        }
+        stage("Populate .env file") {
+            steps {
+                script {
+                    sh 'cp C:/xampp/htdocs/SAG.env ${WORKSPACE}/.env'
+                }
+            }
+        }
+        stage("Run Tests") {
+            steps {
+                sh 'docker compose run --rm artisan test'
+            }
+        }
+    }
+    post {
+        always {
+            sh 'docker compose down --remove-orphans -v'
+            sh 'docker compose ps'
         }
     }
 }
