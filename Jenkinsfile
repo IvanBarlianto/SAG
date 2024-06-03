@@ -35,7 +35,7 @@ pipeline {
         stage("Populate .env file") {
             steps {
                 script {
-                    sh 'cp C:/xampp/htdocs/SAG.env ${WORKSPACE}/.env'
+                    sh 'cp C:/xampp/htdocs/SAG/.env ${WORKSPACE}/.env'
                 }
             }
         }
