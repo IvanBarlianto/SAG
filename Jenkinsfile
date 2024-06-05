@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage("Verify tooling") {
             steps {
-                bat '''
+                sh '''
                     docker info
                     docker version
                     docker compose version
@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker rm -f $(docker ps -a -q)'
+                        sh 'docker rm -f $(docker ps -a -q)'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
@@ -23,32 +23,32 @@ pipeline {
         }
         stage("Start Docker") {
             steps {
-                bat 'make up'
-                bat 'docker compose ps'
+                sh 'make up'
+                sh 'docker compose ps'
             }
         }
         stage("Run Composer Install") {
             steps {
-                bat 'docker compose run --rm composer install'
+                sh 'docker compose run --rm composer install'
             }
         }
         stage("Populate .env file") {
             steps {
                 script {
-                    bat 'cp C:/var/jenkins_home/workspace/envs/SAG/.env ${WORKSPACE}/.env'
+                    sh 'cp C:/var/jenkins_home/workspace/envs/SAG/.env ${WORKSPACE}/.env'
                 }
             }
         }
         stage("Run Tests") {
             steps {
-                bat 'docker compose run --rm artisan test'
+                sh 'docker compose run --rm artisan test'
             }
         }
     }
     post {
         always {
-            bat 'docker compose down --remove-orphans -v'
-            bat 'docker compose ps'
+            sh 'docker compose down --remove-orphans -v'
+            sh 'docker compose ps'
         }
     }
 }
