@@ -4,9 +4,9 @@ pipeline {
         stage("Verify tooling") {
             steps {
                 sh '''
-                    docker info
-                    docker version
-                    docker compose version
+                    bat 'echo %PATH%'
+                    bat 'docker --version'
+                    bat 'docker info'
                 '''
             }
         }
