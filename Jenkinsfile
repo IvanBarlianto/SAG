@@ -3,10 +3,10 @@ pipeline {
     stages {
         stage("Verify tooling") {
             steps {
-                sh '''
-                    bat 'echo %PATH%'
-                    bat 'docker --version'
-                    bat 'docker info'
+                bat '''
+                    docker info
+                    docker version
+                    docker compose version
                 '''
             }
         }
