@@ -35,7 +35,8 @@ pipeline {
         stage("Populate .env file") {
             steps {
                 script {
-                    sh 'cp C:/var/jenkins_home/workspace/envs/SAG/.env ${WORKSPACE}/.env'
+                    dir("C:/var/jenkins_home/workspace/envs/SAG") {
+                    fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
                 }
             }
         }
