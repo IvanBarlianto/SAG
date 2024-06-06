@@ -29,12 +29,12 @@ pipeline {
         }
         stage("Run Composer Install") {
             steps {
-                bat 'docker-compose run --rm composer install'
+                bat 'docker-compose run --rm -T composer install'
             }
         }
         stage("Populate .env file") {
             steps {
-                    dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
+                dir("C:/ProgramData/Jenkins/.jenkins/workspace/sag") {
                     fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
                 }
             }
@@ -42,7 +42,12 @@ pipeline {
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
-                bat 'docker-compose run --rm artisan test'
+                try {
+                    bat 'docker-compose run --rm -T artisan test'
+                } catch (Exception e) {
+                    echo "Error running tests: ${e.message}"
+                    currentBuild.result = 'FAILURE'
+                }
             }
         }
     }
