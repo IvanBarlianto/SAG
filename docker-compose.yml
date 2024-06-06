@@ -1,4 +1,4 @@
-version: '2.27.0'
+version: '2.4'  # Upgrade ke versi terbaru
 
 networks:
   laravel:
@@ -111,7 +111,7 @@ services:
     depends_on:
       - mysql
     working_dir: /var/www/html
-    entrypoint: ['php', '/var/www/html/artisan']
+    entrypoint: ['php', '/var/www/html/artisan', 'test']  # Tambahkan perintah 'test'
     networks:
       - laravel
 
