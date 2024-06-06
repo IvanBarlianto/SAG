@@ -34,20 +34,11 @@ pipeline {
         }
         stage("Populate .env file") {
             steps {
-                dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
-                    script {
-                        // Ensure File Operations plugin is available
-                        if (fileOperations) {
-                            fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${env.WORKSPACE}")])
-                        } else {
-                            error "File Operations plugin is not available."
-                        }
-                    }
+                    dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
+                    fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
                 }
             }
         }
-    
-
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
@@ -55,5 +46,4 @@ pipeline {
             }
         }
     }
-
 }
