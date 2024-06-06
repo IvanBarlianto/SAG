@@ -2,10 +2,10 @@
 @section('title', 'Buku')
 
 @section('isihalaman')
-    <h3><center>Daftar Buku Perpustakaan Universitas Semarang</center></h3>
-    
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBukuTambah"> 
-        Tambah Data Buku 
+    <h3><center>Daftar Buku Perpustakaan SAG</center></h3>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalBukuTambah">
+        Tambah Data Buku
     </button>
 
     <p>
@@ -32,8 +32,8 @@
                     <td>{{$bk->pengarang}}</td>
                     <td>{{$bk->kategori}}</td>
                     <td align="center">
-                        
-                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalBukuEdit{{$bk->id_buku}}"> 
+
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalBukuEdit{{$bk->id_buku}}">
                             Edit
                         </button>
                          <!-- Awal Modal EDIT data Buku -->
@@ -162,5 +162,5 @@
         </div>
     </div>
     <!-- Akhir Modal tambah data buku -->
-    
+
 @endsection

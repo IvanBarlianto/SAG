@@ -1,6 +1,6 @@
 <!--awal KONTEN-->
 <div class="col-md-9">
-     @yield('isihalaman')                 
+     @yield('isihalaman')
 </div>
 <!--akhir KONTEN-->
 </div>
