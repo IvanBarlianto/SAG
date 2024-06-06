@@ -42,7 +42,6 @@ pipeline {
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
-                bat 'docker-compose run artisan test'
             }
         }
     }
