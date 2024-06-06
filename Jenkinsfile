@@ -43,15 +43,15 @@ pipeline {
             steps {
                 // Jalankan PHPUnit di dalam container PHP
                 script {
-                    sh "docker-compose exec php bash -c 'cd /var/www/html && php artisan test'"
+                    bat "docker-compose exec php bash -c 'cd /var/www/html && php artisan test'"
                 }
             }
         }
         stage("Run PHPUnit Tests Locally") {
             steps {
                 // Jalankan PHPUnit secara lokal
-                sh "composer install"
-                sh "./vendor/bin/phpunit"
+                bat "composer install"
+                bat "./vendor/bin/phpunit"
             }
         }
     }
