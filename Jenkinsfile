@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    tools{
+        jdk 'OpenJDK-17'
+        maven ''
+    }
     stages {
         stage("SCM") {
             steps {
