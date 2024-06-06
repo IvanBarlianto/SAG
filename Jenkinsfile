@@ -1,20 +1,36 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'OpenJDK-17' // Assuming the name you gave when configuring the JDK
+        maven 'maven3'
+    }
+
+    environment {
+        SCANNER_HOME = 'C:/ProgramData/Jenkins/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonarqube-scanner'
+    }
+
     stages {
-        stage('Build') {
+        stage("SCM") {
             steps {
-                echo 'Building..'
+                git branch: 'Ivan', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/IvanBarlianto/SAG'
             }
         }
-        stage('Test') {
+        stage("Compile") {
             steps {
-                echo 'Testing..'
+                bat "mvn clean compile"
             }
         }
-        stage('Deploy') {
+        stage("Sonarqube Analysis") {
             steps {
-                echo 'Deploying....'
+                withSonarQubeEnv('SonarQube') {
+                    bat "${SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage("Deploy to Tomcat") {
+            steps {
+                echo 'Hello World'
             }
         }
     }
