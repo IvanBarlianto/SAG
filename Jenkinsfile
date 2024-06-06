@@ -1,42 +1,55 @@
 pipeline {
     agent any
-
-    tools {
-        jdk 'OpenJDK-17' // Assuming the name you gave when configuring the JDK
-        maven 'maven3'
-    }
-
-    environment {
-        SCANNER_HOME = 'C:/ProgramData/Jenkins/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonarqube-scanner'
-    }
-
     stages {
-        stage("SCM") {
+        stage("Verify tooling") {
             steps {
-                echo "Cloning repository..."
-                git branch: 'Ivan', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/IvanBarlianto/SAG'
-                echo "Repository cloned. Listing files:"
-                bat 'dir'
+                bat '''
+                    docker info
+                    docker version
+                    docker-compose version
+                '''
             }
         }
-        stage("Compile") {
+        stage("Clear all running docker containers") {
             steps {
-                echo "Compiling the project..."
-                bat 'dir' // Menampilkan isi direktori sebelum menjalankan Maven
-                bat "mvn clean compile"
-            }
-        }
-        stage("Sonarqube Analysis") {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    bat "${SCANNER_HOME}/bin/sonar-scanner"
+                script {
+                    try {
+                        bat 'docker rm -f $(docker ps -a -q)'
+                    } catch (Exception e) {
+                        echo 'No running container to clear up...'
+                    }
                 }
             }
         }
-        stage("Deploy to Tomcat") {
+        stage("Start Docker") {
             steps {
-                echo 'Hello World'
+                bat 'docker-compose up -d'
+                bat 'docker-compose ps'
             }
+        }
+        stage("Run Composer Install") {
+            steps {
+                bat 'docker-compose run --rm composer install'
+            }
+        }
+        stage("Populate .env file") {
+            steps {
+                    dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
+                    fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
+                }
+            }
+        }
+        stage("Run Tests") {
+            steps {
+                bat 'echo running unit-tests'
+                bat 'docker-compose run --rm artisan test'
+            }
+        }
+    }
+    post {
+        always {
+            bat 'docker-compose down --remove-orphans -v'
+            bat 'docker-compose ps'
         }
     }
 }
