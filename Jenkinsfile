@@ -18,13 +18,13 @@ pipeline {
         }
         stage("Compile") {
             steps {
-                sh "mvn clean compile"
+                bat "mvn clean compile"
             }
         }
         stage("Sonarqube Analysis") {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh "${SCANNER_HOME}/bin/sonar-scanner"
+                    bat "${SCANNER_HOME}/bin/sonar-scanner"
                 }
             }
         }
