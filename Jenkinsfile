@@ -32,6 +32,11 @@ pipeline {
                 bat 'docker-compose run --rm composer install'
             }
         }
+        stage("Run Composer Install") {
+            steps {
+                bat ' docker-compose run --rm artisan test --verbose'
+            }
+        }
         stage("Populate .env file") {
             steps {
                     dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
