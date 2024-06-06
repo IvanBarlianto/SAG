@@ -1,6 +1,11 @@
 pipeline {
     agent any
     stages {
+        stage("SCM") {
+            steps {
+                git branch: 'Ivan', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/IvanBarlianto/SAG.git'
+            }
+        }
         stage("Verify tooling") {
             steps {
                 bat '''
