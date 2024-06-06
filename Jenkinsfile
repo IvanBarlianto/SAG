@@ -13,11 +13,16 @@ pipeline {
     stages {
         stage("SCM") {
             steps {
+                echo "Cloning repository..."
                 git branch: 'Ivan', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/IvanBarlianto/SAG'
+                echo "Repository cloned. Listing files:"
+                bat 'dir'
             }
         }
         stage("Compile") {
             steps {
+                echo "Compiling the project..."
+                bat 'dir' // Menampilkan isi direktori sebelum menjalankan Maven
                 bat "mvn clean compile"
             }
         }
