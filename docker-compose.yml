@@ -47,7 +47,7 @@ services:
     volumes:
       - C:\xampp\htdocs\SAG:/var/www/html
     depends_on:
-      - db
+      - mysql
 
   php:
     build:
