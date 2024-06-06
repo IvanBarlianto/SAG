@@ -1,54 +1,37 @@
 pipeline {
     agent any
-    stages {
-        stage("Verify tooling") {
-            steps {
-                sh '''
-                    docker info
-                    docker version
-                    docker compose version
-                '''
-            }
-        }
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        sh 'docker rm -f $(docker ps -a -q)'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
-                }
-            }
-        }
-        stage("Start Docker") {
-            steps {
-                sh 'make up'
-                sh 'docker compose ps'
-            }
-        }
-        stage("Run Composer Install") {
-            steps {
-                sh 'docker compose run --rm composer install'
-            }
-        }
-        stage("Populate .env file") {
-            steps {
-                script {
-                    sh 'cp C:/xampp/htdocs/SAG.env ${WORKSPACE}/.env'
-                }
-            }
-        }
-        stage("Run Tests") {
-            steps {
-                sh 'docker compose run --rm artisan test'
-            }
-        }
+
+    tools {
+        jdk 'OpenJDK-17' // Assuming the name you gave when configuring the JDK
+        maven 'maven3'
     }
-    post {
-        always {
-            sh 'docker compose down --remove-orphans -v'
-            sh 'docker compose ps'
+
+    environment {
+        SCANNER_HOME = 'C:/ProgramData/Jenkins/.jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonarqube-scanner'
+    }
+
+    stages {
+        stage("SCM") {
+            steps {
+                git branch: 'Ivan', changelog: false, credentialsId: 'github', poll: false, url: 'https://github.com/IvanBarlianto/SAG'
+            }
+        }
+        stage("Compile") {
+            steps {
+                bat "mvn clean compile"
+            }
+        }
+        stage("Sonarqube Analysis") {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat "${SCANNER_HOME}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage("Deploy to Tomcat") {
+            steps {
+                echo 'Hello World'
+            }
         }
     }
 }
