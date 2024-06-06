@@ -42,7 +42,7 @@ pipeline {
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
-                bat 'docker-compose run --rm artisan test'
+                bat 'docker-compose run --rm phpunit'
             }
         }
     }
