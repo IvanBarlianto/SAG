@@ -3,7 +3,9 @@ pipeline {
     tools{
         jdk 'OpenJDK-17'
         maven 'maven3'
-        SCANNER_HOME = tool 'sonarqube-scanner'
+    }
+    environment {
+        SCANNER_HOME = tool name: 'sonarqube-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
     }
     stages {
         stage("SCM") {
