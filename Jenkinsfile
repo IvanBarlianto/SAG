@@ -39,10 +39,19 @@ pipeline {
                 }
             }
         }
-        stage("Run Tests") {
+        stage("Run PHPUnit Tests") {
             steps {
-                bat 'echo running unit-tests'
-                bat 'docker-compose run --rm phpunit'
+                // Jalankan PHPUnit di dalam container PHP
+                script {
+                    sh "docker-compose exec php bash -c 'cd /var/www/html && php artisan test'"
+                }
+            }
+        }
+        stage("Run PHPUnit Tests Locally") {
+            steps {
+                // Jalankan PHPUnit secara lokal
+                sh "composer install"
+                sh "./vendor/bin/phpunit"
             }
         }
     }
