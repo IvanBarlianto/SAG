@@ -42,6 +42,13 @@ services:
     networks:
       - laravel
 
+  phpunit:
+    image: phpunit/phpunit
+    volumes:
+      - C:\xampp\htdocs\SAG:/var/www/html
+    depends_on:
+      - db
+
   php:
     build:
       context: ./dockerfiles
