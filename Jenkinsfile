@@ -43,7 +43,7 @@ pipeline {
             steps {
                 // Jalankan PHPUnit di dalam container PHP
                 script {
-                    bat "docker-compose exec php bash -c 'cd C:/xampp/htdocs/SAG && php artisan test'"
+                    bat "docker-compose exec php sh -c 'cd C:/xampp/htdocs/SAG && php artisan test'"
                 }
             }
         }
