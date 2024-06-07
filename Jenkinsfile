@@ -34,7 +34,7 @@ pipeline {
         }
         stage("Populate .env file") {
             steps {
-                    dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
+                dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
                     fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
                 }
             }
@@ -44,6 +44,12 @@ pipeline {
                 bat 'echo running unit-tests'
                 bat 'docker-compose run --rm artisan test'
             }
+        }
+    }
+    post {
+        always {
+            bat 'docker-compose down --remove-orphans -v'
+            bat 'docker-compose ps'
         }
     }
 }
