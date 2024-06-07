@@ -39,15 +39,15 @@ pipeline {
                 }
             }
         }
-        stage("Run Artisan Serve") {
-            steps {
-                bat 'docker-compose run --rm -p 8000:8000 artisan serve'
-            }
-        }
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
                 bat 'docker-compose run --rm artisan test'
+            }
+        }
+        stage("Run Artisan Serve") {
+            steps {
+                bat 'docker-compose run --rm -p 8000:8000 artisan serve'
             }
         }
     }
