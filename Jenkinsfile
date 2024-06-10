@@ -46,10 +46,4 @@ pipeline {
             }
         }
     }
-    post {
-        always {
-            bat 'docker-compose down --remove-orphans -v'
-            bat 'docker-compose ps'
-        }
-    }
 }
