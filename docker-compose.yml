@@ -111,7 +111,7 @@ services:
     depends_on:
       - mysql
     working_dir: /var/www/html
-    entrypoint: ['php', '/var/www/html/artisan', 'test']  # Tambahkan perintah 'test'
+    entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
 
