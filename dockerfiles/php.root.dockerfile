@@ -1,4 +1,4 @@
-FROM php:8.2.0
+FROM php:8.2.0-fpm
 
 RUN mkdir -p /var/www/html
 
