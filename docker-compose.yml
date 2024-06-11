@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 networks:
   laravel:
@@ -43,6 +43,7 @@ services:
       - laravel
 
   php:
+    image: php:8.2-fpm-alpine
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
