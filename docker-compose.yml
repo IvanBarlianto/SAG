@@ -5,13 +5,7 @@ networks:
 
 services:
   site:
-    build:
-      context: ./dockerfiles
-      dockerfile: nginx.dockerfile
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        USER: ${USER:-youruser}
+    image: nginx:latest
     ports:
       - "80:80"
     volumes:
@@ -62,7 +56,7 @@ services:
     working_dir: /var/www/html
     depends_on:
       - php
-    user: ${UID}:${GID}
+    user: ${USER:-youruser}
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
