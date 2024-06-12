@@ -120,7 +120,7 @@ services:
     image: mailhog/mailhog:latest
     container_name: mailhog
     ports:
-      - "1026:1025"
-      - "8026:8025"
+      - "1026:1026"
+      - "8026:8026"
     networks:
       - laravel
