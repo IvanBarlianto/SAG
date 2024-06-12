@@ -65,14 +65,7 @@ pipeline {
                     } catch (Exception e) {
                         echo "Failed to join Docker Swarm: ${e.message}"
                     }
-    
-        stage("Deploy Stack") {
-            steps {
-                script {
-                    try {
-                        bat 'docker stack deploy -c docker-compose.yml my_laravel_stack'
-                    } catch (Exception e) {
-                        echo "Failed to deploy stack: ${e.message}"
+                }
             }
         }
     }
