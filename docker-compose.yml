@@ -5,7 +5,14 @@ networks:
 
 services:
   site:
-    image: nginx:latest
+    build:
+      context: ./dockerfiles
+      dockerfile: nginx.dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USER: ${USER:-youruser}
+    container_name: nginx
     ports:
       - "80:80"
     volumes:
@@ -20,6 +27,7 @@ services:
 
   mysql:
     image: mariadb:10.6
+    container_name: mysql
     restart: unless-stopped
     tty: true
     ports:
@@ -36,6 +44,14 @@ services:
 
   php:
     image: php:8.2-fpm-alpine
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USER: ${USER:-youruser}
+    container_name: php
     volumes:
       - ./:/var/www/html:delegated
     networks:
@@ -43,6 +59,7 @@ services:
 
   redis:
     image: redis:alpine
+    container_name: redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -50,7 +67,14 @@ services:
       - laravel
 
   composer:
-    image: composer:2
+    build:
+      context: ./dockerfiles
+      dockerfile: composer.dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USER: ${USER:-youruser}
+    container_name: composer
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
@@ -63,6 +87,7 @@ services:
 
   npm:
     image: node:13.7
+    container_name: npm
     volumes:
       - ./:/var/www/html
     ports:
@@ -74,7 +99,14 @@ services:
       - laravel
 
   artisan:
-    image: php:8.2-fpm-alpine
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USER: ${USER:-youruser}
+    container_name: artisan
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
@@ -86,6 +118,7 @@ services:
 
   mailhog:
     image: mailhog/mailhog:latest
+    container_name: mailhog
     ports:
       - "1025:1025"
       - "8025:8025"
