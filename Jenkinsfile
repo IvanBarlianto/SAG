@@ -45,10 +45,5 @@ pipeline {
                 bat 'docker-compose run --rm artisan test'
             }
         }
-        stage("Deploy to Docker Swarm") {
-            steps {
-                bat 'docker stack deploy -c docker-compose.yml my_laravel_stack'
-            }
-        }
     }
-}     
+}
