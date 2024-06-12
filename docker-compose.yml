@@ -42,13 +42,6 @@ services:
 
   php:
     image: php:8.2-fpm-alpine
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        USER: ${USER:-youruser}
     volumes:
       - ./:/var/www/html:delegated
     networks:
@@ -63,19 +56,13 @@ services:
       - laravel
 
   composer:
-    build:
-      context: ./dockerfiles
-      dockerfile: composer.dockerfile
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        USER: ${USER:-youruser}
+    image: composer:2
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
     depends_on:
       - php
-    user: ${USER:-youruser}
+    user: ${UID}:${GID}
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
@@ -93,13 +80,7 @@ services:
       - laravel
 
   artisan:
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        USER: ${USER:-youruser}
+    image: php:8.2-fpm-alpine
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
