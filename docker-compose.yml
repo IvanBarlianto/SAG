@@ -14,7 +14,7 @@ services:
         USER: ${USER:-youruser}
     container_name: nginx
     ports:
-      - "80:80"
+      - "8080:80"  # Ubah port eksternal dari 80 menjadi 8080
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "3307:3306"
+      - "3308:3306"  # Ubah port eksternal dari 3307 menjadi 3308
     environment:
       MYSQL_DATABASE: homestead
       MYSQL_USER: homestead
@@ -44,6 +44,13 @@ services:
 
   php:
     image: php:8.2-fpm-alpine
+    build:
+      context: ./dockerfiles
+      dockerfile: php.dockerfile
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+        USER: ${USER:-youruser}
     container_name: php
     volumes:
       - ./:/var/www/html:delegated
@@ -55,7 +62,7 @@ services:
     container_name: redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "6380:6379"  # Ubah port eksternal dari 6379 menjadi 6380
     networks:
       - laravel
 
@@ -84,8 +91,8 @@ services:
     volumes:
       - ./:/var/www/html
     ports:
-      - "3000:3000"
-      - "3001:3001"
+      - "3002:3000"  
+      - "3003:3001"  
     working_dir: /var/www/html
     entrypoint: ['npm']
     networks:
@@ -113,7 +120,7 @@ services:
     image: mailhog/mailhog:latest
     container_name: mailhog
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "1026:1025"  
+      - "8026:8025"  
     networks:
       - laravel
