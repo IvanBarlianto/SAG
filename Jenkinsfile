@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker rm -f $(docker ps -a -q)'
+                        bat 'for /F "tokens=*" %i IN (\'docker ps -aq\') DO docker rm -f %i'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
@@ -48,7 +48,23 @@ pipeline {
         stage("Deploy to Docker Swarm") {
             steps {
                 script {
-                    bat 'docker swarm join --token SWMTKN-1-686ylfwd82sgyib3qy0tsj69woj7ri3p6qifkwgfg42rog5zvc-2y8yz1cvmrdg15nbndscjvpx5 192.168.65:2377'
+                    def swarmToken = "SWMTKN-1-2mz9k2pm63x1slzdq38dmq3y3yw95ld8k6l44ptlm79n9wqv30-32x985hdgboj5iazfbkvs3o7p"
+                    def managerIP = "192.168.65.3"
+                    def managerPort = "2377"
+
+                    try {
+                        // Initialize Swarm (if needed) and get IP and port
+                        def initOutput = bat(script: 'docker swarm init', returnStdout: true)
+                        echo initOutput
+
+                        // Join the Swarm
+                        bat 'docker swarm init'
+                        bat "docker swarm join --token ${swarmToken} ${managerIP}:${managerPort}"
+                    } catch (Exception e) {
+                        echo "Failed to join Docker Swarm: ${e.message}"
+                    }
+
+                    // Deploy stack
                     bat 'docker stack deploy -c docker-compose.yml my_laravel_stack'
                 }
             }
