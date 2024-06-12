@@ -53,12 +53,14 @@ pipeline {
                     def managerPort = "2377"
 
                     try {
+                        // Leave the existing swarm (if any)
+                        bat(script: 'docker swarm leave --force', returnStatus: true)
+                        
                         // Initialize Swarm (if needed) and get IP and port
                         def initOutput = bat(script: 'docker swarm init', returnStdout: true)
                         echo initOutput
 
                         // Join the Swarm
-                        bat 'docker swarm init'
                         bat "docker swarm join --token ${swarmToken} ${managerIP}:${managerPort}"
                     } catch (Exception e) {
                         echo "Failed to join Docker Swarm: ${e.message}"
