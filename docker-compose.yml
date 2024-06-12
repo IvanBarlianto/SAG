@@ -12,7 +12,6 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
         USER: ${USER:-youruser}
-    container_name: nginx
     ports:
       - "80:80"
     volumes:
@@ -27,11 +26,6 @@ services:
 
   mysql:
     image: mariadb:10.6
-    container_name: mysql
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3307:3306"
     environment:
       MYSQL_DATABASE: homestead
       MYSQL_USER: homestead
@@ -41,6 +35,9 @@ services:
       SERVICE_NAME: mysql
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   php:
     image: php:8.2-fpm-alpine
@@ -51,22 +48,26 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
         USER: ${USER:-youruser}
-    container_name: php
     volumes:
       - ./:/var/www/html:delegated
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   redis:
     image: redis:alpine
-    container_name: redis
-    restart: unless-stopped
     ports:
       - "6379:6379"
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   composer:
+    image: composer:latest
     build:
       context: ./dockerfiles
       dockerfile: composer.dockerfile
@@ -74,7 +75,6 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
         USER: ${USER:-youruser}
-    container_name: composer
     volumes:
       - ./:/var/www/html
     working_dir: /var/www/html
@@ -84,10 +84,12 @@ services:
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   npm:
     image: node:13.7
-    container_name: npm
     volumes:
       - ./:/var/www/html
     ports:
@@ -97,8 +99,12 @@ services:
     entrypoint: ['npm']
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   artisan:
+    image: php:8.2-fpm-alpine
     build:
       context: ./dockerfiles
       dockerfile: php.dockerfile
@@ -106,7 +112,6 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
         USER: ${USER:-youruser}
-    container_name: artisan
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
@@ -115,12 +120,17 @@ services:
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
 
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: mailhog
     ports:
-      - "1026:1026"
-      - "8026:8026"
+      - "1025:1025"
+      - "8025:8025"
     networks:
       - laravel
+    deploy:
+      restart_policy:
+        condition: any
