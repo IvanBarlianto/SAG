@@ -51,15 +51,12 @@ pipeline {
                     def swarmToken = "SWMTKN-1-686ylfwd82sgyib3qy0tsj69woj7ri3p6qifkwgfg42rog5zvc-2y8yz1cvmrdg15nbndscjvpx5"
                     def managerIP = "192.168.65.3"
                     def managerPort = "2377"
-
                     try {
-                        // Bergabung dengan swarm
-                        bat "docker swarm join --token ${swarmToken} ${managerIP}:${managerPort}"
+                        bat 'docker swarm leave --force'
+                        bat 'docker swarm join --token SWMTKN-1-686ylfwd82sgyib3qy0tsj69woj7ri3p6qifkwgfg42rog5zvc-2y8yz1cvmrdg15nbndscjvpx5 192.168.65.:2377'
                     } catch (Exception e) {
                         echo "Failed to join Docker Swarm: ${e.message}"
                     }
-
-                    // Menjalankan deployment stack
                     bat 'docker stack deploy -c docker-compose.yml my_laravel_stack'
                 }
             }
