@@ -44,13 +44,6 @@ services:
 
   php:
     image: php:8.2-fpm-alpine
-    build:
-      context: ./dockerfiles
-      dockerfile: php.dockerfile
-      args:
-        UID: ${UID:-1000}
-        GID: ${GID:-1000}
-        USER: ${USER:-youruser}
     container_name: php
     volumes:
       - ./:/var/www/html:delegated
