@@ -56,8 +56,8 @@ pipeline {
                         // Leave the existing swarm (if any)
                         bat(script: 'docker swarm leave --force', returnStatus: true)
                         
-                        // Initialize Swarm (if needed) and get IP and port
-                        def initOutput = bat(script: 'docker swarm init', returnStdout: true)
+                        // Initialize Swarm (if needed)
+                        def initOutput = bat(script: 'docker swarm init', returnStdout: true, returnStatus: true)
                         echo initOutput
 
                         // Join the Swarm
