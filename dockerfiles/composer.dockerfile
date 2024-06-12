@@ -8,10 +8,13 @@ ENV UID=${UID}
 ENV GID=${GID}
 ENV USER=${USER}
 
-# MacOS staff group's gid is 20, so is the dialout group in alpine linux. We're not using it, let's just remove it.
-RUN delgroup dialout
+# Hapus delgroup dialout jika tidak diperlukan
+# RUN delgroup dialout
 
-RUN addgroup -g ${GID} --system ${USER}
+# Tambahkan grup dengan ID yang diberikan
+RUN addgroup -g ${GID} ${USER}
+
+# Tambahkan pengguna dengan ID pengguna dan ID grup yang diberikan
 RUN adduser -G ${USER} --system -D -s /bin/sh -u ${UID} ${USER}
 
 WORKDIR /var/www/html
