@@ -47,6 +47,8 @@ pipeline {
         }
         stage("Deploy to Docker Swarm") {
             steps {
+                bat 'docker swarm init'
+                bat 'docker swarm join'
                 bat 'docker stack deploy -c docker-compose.yml my_laravel_stack'
             }
         }
