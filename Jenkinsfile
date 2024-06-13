@@ -25,7 +25,7 @@ pipeline {
             steps {
                 script {
                     def sshCommand = """
-                        ssh -o StrictHostKeyChecking=no -i C:\\path\\to\\sag-web-key.pem ec2-user@13.236.94.126 whoami
+                        ssh -o StrictHostKeyChecking=no -i "C:/Users/abrarta/Downloads/sag-web-key.pem" ec2-user@13.236.94.126 whoami
                     """
                     bat sshCommand
                 }
