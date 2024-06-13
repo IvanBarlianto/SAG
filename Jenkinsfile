@@ -21,13 +21,12 @@ pipeline {
                 }
             }
         }
-        stage("Verify SSH connection to server") {
+         stage("Verify SSH connection to server") {
             steps {
-                script {
-                    def sshCommand = """
-                        ssh -o StrictHostKeyChecking=no -i "C:/Users/abrarta/Downloads/sag-web-key.pem" ec2-user@13.236.94.126 whoami
-                    """
-                    bat sshCommand
+                sshagent(credentials: ['aws-ec2']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@13.236.94.126 whoami
+                    '''
                 }
             }
         }
