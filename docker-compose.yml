@@ -33,10 +33,10 @@ services:
     ports:
       - "3307:3306"
     environment:
-      MYSQL_DATABASE: homestead
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: sag
+      MYSQL_USER: sag
+      MYSQL_PASSWORD: sag
+      MYSQL_ROOT_PASSWORD: sag
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     networks:
@@ -133,7 +133,7 @@ services:
       - 8080:80
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: trinity # Ensure this matches your .env file
+      MYSQL_ROOT_PASSWORD: sag # Ensure this matches your .env file
     depends_on:
       - mysql
     networks:
