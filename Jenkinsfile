@@ -23,12 +23,10 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                script {
-                    sshagent(credentials: ['aws-ec2']) {
-                        bat '''
-                            echo y | plink -ssh -i C:\\Users\\ROG\\Downloads\\webkey\\private-key.ppk ZERIX$@13.236.94.126 -P 22 whoami
-                        '''
-                    }
+                sshagent(credentials: ['aws-ec2']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@13.236.94.126 whoami
+                    '''
                 }
             }
         }
