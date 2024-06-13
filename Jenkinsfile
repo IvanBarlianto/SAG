@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker rm -f $(docker ps -a -q)'
+                        bat 'for /F "tokens=*" %i IN ('docker ps -a -q') DO docker rm -f %i'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
@@ -24,9 +24,9 @@ pipeline {
         stage("Verify SSH connection to server") {
             steps {
                 script {
-                    sshagent(credentials: ['aws-ec2']) {
+                    sshagent(['aws-ec2']) {
                         bat '''
-                            echo y | plink -ssh -i C:\\path\\to\\your\\private-key.ppk ec2-user@13.236.94.126 -P 22 whoami
+                            echo y | plink -ssh -i C:\\path\\to\\your\\private-key.ppk ZERIX$@13.236.94.126 -P 22 whoami
                         '''
                     }
                 }
