@@ -23,11 +23,11 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['aws-ec2']) {
-                    bat '''
-                        @echo off
-                        ssh -o StrictHostKeyChecking=no -i C:/Users/abrarta/Downloads/sag-web-key.pem ec2-user@13.236.94.126 whoami
-                    '''
+                script {
+                    def sshCommand = """
+                        ssh -o StrictHostKeyChecking=no -i C:\\path\\to\\sag-web-key.pem ec2-user@13.236.94.126 whoami
+                    """
+                    bat sshCommand
                 }
             }
         }
