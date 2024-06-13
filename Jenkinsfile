@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker volume rm -f $(docker ps -a -q)'
+                        bat 'docker rm -f $(docker ps -a -q)'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
@@ -23,10 +23,12 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['aws-ec2']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ec2-user@13.236.94.126 whoami
-                    '''
+                script {
+                    sshagent(credentials: ['aws-ec2']) {
+                        bat '''
+                            echo y | plink -ssh -i C:\\path\\to\\your\\private-key.ppk ec2-user@13.236.94.126 whoami
+                        '''
+                    }
                 }
             }
         }
