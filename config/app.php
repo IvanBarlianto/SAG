@@ -212,4 +212,10 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'aliases' => [
+    // Alias lainnya
+    'Example' => App\Facades\ExampleFacade::class,
+],
+
+
 ];

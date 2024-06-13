@@ -21,6 +21,15 @@ pipeline {
                 }
             }
         }
+        stage("Verify SSH connection to server") {
+            steps {
+                sshagent(credentials: ['aws-ec2']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no ec2-user@13.236.94.126 whoami
+                    '''
+                }
+            }
+        }
         stage("Start Docker") {
             steps {
                 bat 'docker-compose up -d'
@@ -43,11 +52,6 @@ pipeline {
             steps {
                 bat 'echo running unit-tests'
                 bat 'docker-compose run --rm artisan test'
-            }
-        }
-        stage("Run Artisan Serve") {
-            steps {
-                bat 'docker-compose run --rm -p 8000:8000 artisan serve'
             }
         }
     }
