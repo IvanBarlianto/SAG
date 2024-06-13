@@ -24,9 +24,9 @@ pipeline {
         stage("Verify SSH connection to server") {
             steps {
                 script {
-                    sshagent(['aws-ec2']) {
+                    sshagent(credentials: ['aws-ec2']) {
                         bat '''
-                            echo y | plink -ssh -i "C:\Users\ROG\Downloads\webkey\private-key.ppk" ZERIX$@13.236.94.126 -P 22 whoami
+                            echo y | plink -ssh -i C:\\Users\\ROG\\Downloads\\webkey\\private-key.ppk ZERIX$@13.236.94.126 -P 22 whoami
                         '''
                     }
                 }
