@@ -26,7 +26,7 @@ pipeline {
                 script {
                     sshagent(credentials: ['aws-ec2']) {
                         bat '''
-                            echo y | plink -ssh -i C:\\path\\to\\your\\private-key.ppk ec2-user@13.236.94.126 whoami
+                            echo y | plink -ssh -i C:\\path\\to\\your\\private-key.ppk ec2-user@13.236.94.126 -P 22 whoami
                         '''
                     }
                 }
