@@ -23,7 +23,7 @@ pipeline {
         }
          stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['aws-ec2']) {
+                ssh-agent(credentials: ['aws-ec2']) {
                     bat '''
                         ssh -o StrictHostKeyChecking=no ubuntu@13.236.94.126 whoami
                     '''
