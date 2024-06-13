@@ -34,7 +34,7 @@ services:
       - "3307:3306"
     environment:
       MYSQL_DATABASE: sag
-      MYSQL_USER: sag
+      MYSQL_USER: root
       MYSQL_PASSWORD: sag
       MYSQL_ROOT_PASSWORD: sag
       SERVICE_TAGS: dev
