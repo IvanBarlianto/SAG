@@ -26,12 +26,11 @@ pipeline {
                 sshagent(credentials: ['aws-ec2']) {
                     bat '''
                         @echo off
-                        echo y | plink -ssh -i "C:/Users/abrarta/Downloads/sag-web-key.pem" ec2-user@13.236.94.126 whoami
+                        ssh -o StrictHostKeyChecking=no -i C:/Users/abrarta/Downloads/sag-web-key.pem ec2-user@13.236.94.126 whoami
                     '''
                 }
             }
         }
-    }
         stage("Start Docker") {
             steps {
                 bat 'docker-compose up -d'
