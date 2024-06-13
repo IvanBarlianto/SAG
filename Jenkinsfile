@@ -26,7 +26,7 @@ pipeline {
                 sshagent(credentials: ['aws-ec2']) {
                     bat '''
                         @echo off
-                        echo y | plink -ssh -i C:\\path\\to\\sag-web-key.ppk ec2-user@13.236.94.126 whoami
+                        echo y | plink -ssh -i "C:/Users/abrarta/Downloads/sag-web-key.pem" ec2-user@13.236.94.126 whoami
                     '''
                 }
             }
