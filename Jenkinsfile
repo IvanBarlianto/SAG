@@ -33,7 +33,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['ssh-jenkins-plugin']) {
                     bat '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@54.253.78.16 whoami
+                        ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
                     '''
                 }
             }
