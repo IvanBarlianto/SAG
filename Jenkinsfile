@@ -1,5 +1,13 @@
 pipeline {
     agent any
+
+    environment {
+        TF_VAR_aws_region = 'ap-southeast-2'
+        TF_VAR_instance_ami = 'ami-080660c9757080771'
+        TF_VAR_instance_type = 't2.micro'
+        TF_VAR_key_name = 'sag-aws-key'
+    }
+
     stages {
         stage("Verify tooling") {
             steps {
@@ -27,6 +35,32 @@ pipeline {
                     bat '''
                         ssh -o StrictHostKeyChecking=no ubuntu@54.253.78.16 whoami
                     '''
+                }
+            }
+        }
+
+    stages {
+        stage("Terraform Init") {
+            steps {
+                script {
+                    sh 'terraform --version'
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage("Terraform Apply") {
+            steps {
+                script {
+                    sh 'terraform apply -auto-approve'
+                    sh 'terraform output -json > tf-output.json'
+                }
+            }
+        }
+        stage("Parse Terraform Output") {
+            steps {
+                script {
+                    def output = readJSON file: 'tf-output.json'
+                    env.PUBLIC_IP = output.public_ip.value
                 }
             }
         }
