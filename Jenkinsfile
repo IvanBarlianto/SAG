@@ -21,9 +21,13 @@ pipeline {
                 }
             }
         }
-        stage('ssh-agent') {
-            sshagent(['ssh-agent']) {
-                sh 'ssh -tt -o StrictHostKeyChecking=no ubuntu@54.253.78.16 ls'
+        stage("Verify SSH connection to server") {
+            steps {
+                sshagent(credentials: ['ssh-jenkins-plugin']) {
+                    bat '''
+                        ssh -o StrictHostKeyChecking=no ubuntu@54.253.78.16 whoami
+                    '''
+                }
             }
         }
         stage("Start Docker") {
