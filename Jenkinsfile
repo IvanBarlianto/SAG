@@ -14,20 +14,16 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'for /F "tokens=*" %i IN ('docker ps -a -q') DO docker rm -f %i'
+                        bat 'docker volume rm -f $(docker ps -q)'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
                 }
             }
         }
-        stage("Verify SSH connection to server") {
-            steps {
-                sshagent(credentials: ['aws-ec2']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@13.236.94.126 whoami
-                    '''
-                }
+        stage('ssh-agent') {
+            sshagent(['ssh-agent']) {
+                sh 'ssh -tt -o StrictHostKeyChecking=no ubuntu@54.253.78.16 ls'
             }
         }
         stage("Start Docker") {
