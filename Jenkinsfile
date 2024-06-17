@@ -26,13 +26,19 @@ pipeline {
                 bat "apt-get update && apt-get install ssh -y"
             }
         }
-        stage("Verify SSH connection to server") {
+        stage("Install SSH on Windows") {
             steps {
-                sshagent(credentials: ['aws']) {
-                    bat '''
-                        ssh -o "sag-aws-key.pem" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
-                    '''
-                }
+                bat '''
+                    powershell -Command "Set-ExecutionPolicy Unrestricted -Scope Process; \
+                                        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; \
+                                        Install-Module -Name OpenSSHUtils -Force; \
+                                        Install-WindowsFeature -Name OpenSSH-Server; \
+                                        Start-Service sshd; \
+                                        Set-Service -Name sshd -StartupType 'Automatic'; \
+                                        if ((Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH.Client*').State -ne 'Installed') { \
+                                            Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0 \
+                                        }"
+                '''
             }
         }
         stage("Start Docker") {
