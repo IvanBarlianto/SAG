@@ -24,7 +24,7 @@ pipeline {
         stage("Verify SSH connection to server") {
             steps {
                     bat '''
-                        ssh -i "sag-aws-key.pem" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
+                        ssh -o "sag-aws-key.pem" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
             }
         }
