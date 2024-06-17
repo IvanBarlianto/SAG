@@ -24,7 +24,11 @@ pipeline {
         stage("Verify SSH connection to server") {
             steps {
                 sshagent(credentials: ['aws-ec2']) {
+<<<<<<< HEAD
                     bat 'ssh -i "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com'
+=======
+                    bat 'ssh -i "sag-aws-key.pem" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com'
+>>>>>>> 5b731fa534f2fc86420b330a501744a9b73edc13
                 }
             }
         }
