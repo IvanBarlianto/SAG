@@ -23,11 +23,6 @@ pipeline {
         }
         stage("Install SSH on Windows") {
             steps {
-                bat "apt-get update && apt-get install ssh -y"
-            }
-        }
-        stage("Install SSH on Windows") {
-            steps {
                 bat '''
                     powershell -Command "Set-ExecutionPolicy Unrestricted -Scope Process; \
                                         Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; \
