@@ -29,7 +29,7 @@ pipeline {
                 script {
                     def sshCommand = "ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
                     withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY')]) {
-                        sh "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
+                        bat "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
                     }
                 }
             }
