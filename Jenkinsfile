@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        SSH_CREDENTIALS_ID = 'aws-ec2' // Replace with your actual SSH credential ID
+    }
     stages {
         stage("Verify tooling") {
             steps {
@@ -21,11 +24,14 @@ pipeline {
                 }
             }
         }
-        stage("Verify SSH connection to server") {
+        stage('Run SSH Command') {
             steps {
-                bat '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
-                '''
+                script {
+                    def sshCommand = "ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
+                    withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY')]) {
+                        sh "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
+                    }
+                }
             }
         }
         stage("Start Docker") {
