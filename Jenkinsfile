@@ -26,7 +26,6 @@ pipeline {
                     bat '''
                         ssh -i "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
-                }
             }
         }
         stage("Start Docker") {
