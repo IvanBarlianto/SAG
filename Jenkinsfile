@@ -23,9 +23,11 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
+                sshagent(credentials: ['aws']) {
                     bat '''
                         ssh -o "sag-aws-key.pem" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
+                }
             }
         }
         stage("Start Docker") {
