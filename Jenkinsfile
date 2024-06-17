@@ -25,7 +25,7 @@ pipeline {
             steps {
                 dir("C:/ProgramData/Jenkins/.jenkins/workspace/sag") {
                     bat '''
-                        ssh -i "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
+                        ssh -o "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
                 }
 
