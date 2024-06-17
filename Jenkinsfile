@@ -23,9 +23,8 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['ssh-jenkins-plugin']) {
                     bat '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
+                        ssh -i "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
                 }
             }
