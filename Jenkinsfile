@@ -21,28 +21,11 @@ pipeline {
                 }
             }
         }
-        stage("Install SSH on Windows") {
-            steps {
-                bat '''
-                    powershell -Command "Set-ExecutionPolicy Unrestricted -Scope Process; \
-                                        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force; \
-                                        Install-Module -Name OpenSSHUtils -Force; \
-                                        Install-WindowsFeature -Name OpenSSH-Server; \
-                                        Start-Service sshd; \
-                                        Set-Service -Name sshd -StartupType 'Automatic'; \
-                                        if ((Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH.Client*').State -ne 'Installed') { \
-                                            Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0 \
-                                        }"
-                '''
-            }
-        }
         stage("Verify SSH connection to server") {
             steps {
-                sshagent(credentials: ['aws']) {
-                    bat '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} whoami
-                    '''
-                }
+                bat '''
+                    ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} whoami
+                '''
             }
         }
         stage("Start Docker") {
