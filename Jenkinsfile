@@ -23,9 +23,9 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                dir("C:/ProgramData/Jenkins/.jenkins/workspace/sag") {
+                sshagent(credentials: ['sag']) {
                     bat '''
-                        ssh -o "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
+                        ssh -i "sag-aws-key.ppk" ubuntu@ec2-13-211-134-87.ap-southeast-2.compute.amazonaws.com whoami
                     '''
                 }
 
