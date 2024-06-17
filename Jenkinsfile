@@ -21,6 +21,11 @@ pipeline {
                 }
             }
         }
+        stage("Install SSH on Windows") {
+            steps {
+                bat "apt-get update && apt-get install ssh -y"
+            }
+        }
         stage("Verify SSH connection to server") {
             steps {
                 sshagent(credentials: ['aws']) {
