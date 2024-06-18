@@ -56,4 +56,15 @@ pipeline {
             }
         }
     }
+    post {
+        success{
+            bat 'cd C:/ProgramData/Jenkins/.jenkins/workspace/sag'
+            bat 'rm -rf artifact.zip'
+            bat 'zip -r artifact.zip . -x "*node_modules**"'
+        }
+        always {
+            sh 'docker compose down --remove-orphans -v'
+            sh 'docker compose ps'
+        }
+    }
 }
