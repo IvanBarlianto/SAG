@@ -16,10 +16,10 @@ pipeline {
                     def volumes = bat(script: 'docker volume ls -q', returnStdout: true).trim()
                     if (volumes) {
                         volumes.split("\n").each { volume ->
-                            bat "docker volume rm -f ${volume}"
+                            bat "docker volume rm -f ${volume.trim()}"
                         }
                     } else {
-                        echo 'No running container to clear up...'
+                        echo 'No running volume to clear up...'
                     }
                 }
             }
