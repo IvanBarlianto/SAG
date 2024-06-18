@@ -14,7 +14,12 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker rm -f $(docker ps -aq)'
+                        // Ambil daftar ID kontainer Docker
+                        def containerIds = bat(script: 'docker ps -aq', returnStdout: true).trim().split('\r?\n')
+                        // Perulangan untuk menghapus setiap kontainer
+                        containerIds.each { id ->
+                            bat "docker rm -f $id"
+                        }
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
