@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'docker volume rm -f'
+                        bat 'docker volume rm -f $(docker volume ls -q)'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
