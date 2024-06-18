@@ -27,6 +27,7 @@ pipeline {
                     bat '''
                         "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
                     '''
+                }
             }
         }
         stage("Start Docker") {
