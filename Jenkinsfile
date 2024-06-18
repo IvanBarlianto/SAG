@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        PATH = "C:/Program Files/7-Zip:$PATH"
+    }
     stages {
         stage("Verify tooling") {
             steps {
@@ -60,7 +63,7 @@ pipeline {
         success{
             bat 'cd C:/ProgramData/Jenkins/.jenkins/workspace/sag'
             bat 'rm -rf artifact.zip'
-            bat 'zip -r artifact.zip . -x "*node_modules**"'
+            bat '7z a -r -tzip artifact.zip * -x!node_modules/*'
         }
         always {
             sh 'docker compose down --remove-orphans -v'
