@@ -23,9 +23,10 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                bat '''
-                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
-                '''
+                withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
+                    bat '''
+                        "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
+                    '''
             }
         }
         stage("Start Docker") {
