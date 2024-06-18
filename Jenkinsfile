@@ -13,9 +13,12 @@ pipeline {
         stage("Clear all running docker containers") {
             steps {
                 script {
-                    try {
-                        bat 'docker volume rm -f $(docker volume ls -q)'
-                    } catch (Exception e) {
+                    def volumes = bat(script: 'docker volume ls -q', returnStdout: true).trim()
+                    if (volumes) {
+                        volumes.split("\n").each { volume ->
+                            bat "docker volume rm -f ${volume}"
+                        }
+                    } else {
                         echo 'No running container to clear up...'
                     }
                 }
