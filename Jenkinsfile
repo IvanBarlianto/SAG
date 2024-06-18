@@ -68,7 +68,7 @@ pipeline {
             '''
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat'''
-                    scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@13.211.134.87:/home/ubuntu/artifact
+                    scp -v -o StrictHostKeyChecking=no -i "C:/Users/ROG/.ssh/sag-aws-key.pem" C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@13.211.134.87:/home/ubuntu/artifact
                 '''
             }
         }
