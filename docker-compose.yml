@@ -14,7 +14,7 @@ services:
         USER: ${USER:-youruser}
     container_name: nginx
     ports:
-      - "82:80"
+      - "81:80"
     volumes:
       - ./:/var/www/html:delegated
     depends_on:
@@ -124,7 +124,7 @@ services:
       - "8025:8025"
     networks:
       - laravel
-  
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:4.8.5
     container_name: phpmyadmin
