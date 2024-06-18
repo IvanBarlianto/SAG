@@ -23,9 +23,7 @@ pipeline {
         }
         stage("Verify SSH connection to server") {
             steps {
-                bat '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
-                '''
+                bat -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
             }
         }
         stage("Start Docker") {
