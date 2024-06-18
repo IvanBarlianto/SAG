@@ -24,7 +24,7 @@ pipeline {
         stage("Verify SSH connection to server") {
             steps {
                 bat '''
-                    StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
+                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
                 '''
             }
         }
