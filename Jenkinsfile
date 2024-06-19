@@ -36,15 +36,6 @@ pipeline {
             }
         }
         
-        stage("Parse Terraform Output") {
-            steps {
-                script {
-                    def output = readJSON file: 'tf-output.json'
-                    env.PUBLIC_IP = output.instance_ip.value
-                }
-            }
-        }
-        
         stage("Transfer Artifact") {
             steps {
                 script {
