@@ -3,6 +3,8 @@ pipeline {
     
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        AWS_ACCESS_KEY_ID     = credentials('AKIA2UC3CNSNSB2XARUB')
+        AWS_SECRET_ACCESS_KEY = credentials('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')
     }
     
     stages {
@@ -15,18 +17,6 @@ pipeline {
                         docker-compose version
                         terraform --version
                     '''
-                }
-            }
-        }
-        
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        bat 'docker rm -f $(docker ps -aq)'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
                 }
             }
         }
@@ -52,54 +42,13 @@ pipeline {
             steps {
                 script {
                     def output = readJSON file: 'tf-output.json'
-                    env.PUBLIC_IP = output.public_ip.value
+                    env.PUBLIC_IP = output.instance_ip.value
                 }
             }
         }
         
-        stage("Verify SSH connection to server") {
-            steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
-                    bat '''
-                        ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
-                    '''
-                }
-            }
-        }
+        // Tambahkan stage lainnya sesuai kebutuhan Anda
         
-        stage("Start Docker") {
-            steps {
-                script {
-                    bat 'docker-compose up -d'
-                    bat 'docker-compose ps'
-                }
-            }
-        }
-        
-        stage("Run Composer Install") {
-            steps {
-                script {
-                    bat 'docker-compose run --rm composer install'
-                }
-            }
-        }
-        
-        stage("Populate .env file") {
-            steps {
-                script {
-                    bat "xcopy /s /y C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag/.env ${WORKSPACE}"
-                }
-            }
-        }
-        
-        stage("Run Tests") {
-            steps {
-                script {
-                    bat 'echo running unit-tests'
-                    bat 'docker-compose run --rm artisan test'
-                }
-            }
-        }
     }
     
     post {
@@ -120,6 +69,7 @@ pipeline {
         
         always {
             script {
+                bat 'terraform destroy -auto-approve'
                 bat 'docker-compose down --remove-orphans -v'
                 bat 'docker-compose ps'
             }
