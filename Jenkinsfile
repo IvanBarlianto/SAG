@@ -24,6 +24,29 @@ pipeline {
                     }
                 }
             }
+            stage("Terraform Init") {
+            steps {
+                script {
+                    sh 'terraform --version'
+                    sh 'terraform init'
+                }
+            }
+        }
+        stage("Terraform Apply") {
+            steps {
+                script {
+                    sh 'terraform apply -auto-approve'
+                    sh 'terraform output -json > tf-output.json'
+                }
+            }
+        }
+        stage("Parse Terraform Output") {
+            steps {
+                script {
+                    def output = readJSON file: 'tf-output.json'
+                    env.PUBLIC_IP = output.public_ip.value
+                }
+            }
         }
         stage("Verify SSH connection to server") {
             steps {
