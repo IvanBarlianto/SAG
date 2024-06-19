@@ -1,11 +1,7 @@
 pipeline {
     agent any
     environment {
-<<<<<<< HEAD
-        SSH_CREDENTIALS_ID = 'aws-ec2' // Replace with your actual SSH credential ID
-=======
         PATH = "C:/Program Files/7-Zip:$PATH"
->>>>>>> Ivan
     }
     stages {
         stage("Verify tooling") {
@@ -21,12 +17,8 @@ pipeline {
             steps {
                 script {
                     try {
-<<<<<<< HEAD
-                        bat 'docker volume rm -f'
-=======
                         // Jalankan perintah bat untuk membersihkan kontainer Docker
                         bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
->>>>>>> Ivan
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
@@ -35,18 +27,10 @@ pipeline {
         }
         stage('Run SSH Command') {
             steps {
-<<<<<<< HEAD
-                script {
-                    def sshCommand = "ssh -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
-                    withCredentials([sshUserPrivateKey(credentialsId: SSH_CREDENTIALS_ID, keyFileVariable: 'SSH_KEY')]) {
-                        bat "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
-                    }
-=======
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                     bat '''
                         "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
                     '''
->>>>>>> Ivan
                 }
             }
         }
@@ -76,9 +60,6 @@ pipeline {
             }
         }
     }
-<<<<<<< HEAD
-}
-=======
     post {
         success {
             bat '''
@@ -98,4 +79,3 @@ pipeline {
         }
     }
 }
->>>>>>> Ivan
