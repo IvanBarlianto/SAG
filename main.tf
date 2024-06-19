@@ -18,17 +18,6 @@ variable "key_name" {
   default     = "sag-key-ec2"  
 }
 
-resource "aws_key_pair" "service_key_pair" {
-  key_name   = var.key_name
-  # Remove public_key attribute if using an existing key pair
-  # public_key = tls_private_key.rsa_4096.public_key_openssh
-}
-
-resource "local_file" "private_key" {
-  content  = tls_private_key.rsa_4096.private_key_pem
-  filename = var.key_name
-}
-
 resource "aws_security_group" "allow_http_ssh" {
   description = "Allow HTTP and SSH inbound traffic"
 
