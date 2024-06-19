@@ -13,11 +13,6 @@ provider "aws" {
   secret_key = "IUfR7PIc4+Royy61atYXQBIevzqaphB6b4PPu58s"
 }
 
-resource "tls_private_key" "rsa_4096" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}
-
 variable "key_name" {
   description = "Name of the EC2 key pair"
   default     = "sag-key-ec2"  
@@ -25,7 +20,8 @@ variable "key_name" {
 
 resource "aws_key_pair" "service_key_pair" {
   key_name   = var.key_name
-  public_key = tls_private_key.rsa_4096.public_key_openssh
+  # Remove public_key attribute if using an existing key pair
+  # public_key = tls_private_key.rsa_4096.public_key_openssh
 }
 
 resource "local_file" "private_key" {
