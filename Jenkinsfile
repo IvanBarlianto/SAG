@@ -13,6 +13,7 @@ pipeline {
                         docker info
                         docker version
                         docker-compose version
+                        terraform --version
                     '''
                 }
             }
@@ -33,7 +34,6 @@ pipeline {
         stage("Terraform Init") {
             steps {
                 script {
-                    bat 'terraform --version'
                     bat 'terraform init'
                 }
             }
