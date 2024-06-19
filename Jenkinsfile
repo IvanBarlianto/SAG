@@ -2,9 +2,7 @@ pipeline {
     agent any
     
     environment {
-        PATH = "C:/Program Files/7-Zip:$PATH"
-        AWS_ACCESS_KEY_ID     = credentials('AKIA2UC3CNSNSB2XARUB')
-        AWS_SECRET_ACCESS_KEY = credentials('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')
+        PATH = "C:/Program Files/7-Zip:$PATH"\
     }
     
     stages {
