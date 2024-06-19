@@ -67,6 +67,11 @@ pipeline {
                 7z a -r -tzip artifact.zip * -x!node_modules/*
             '''
         }
+        withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
+                bat'''
+                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.106.252.49:/home/ubuntu/artifact"
+                '''
+            }
         always {
             sh 'docker compose down --remove-orphans -v'
             sh 'docker compose ps'
