@@ -8,11 +8,13 @@ pipeline {
     stages {
         stage("Verify tooling") {
             steps {
-                bat '''
-                    docker info
-                    docker version
-                    docker-compose version
-                '''
+                script {
+                    bat '''
+                        docker info
+                        docker version
+                        docker-compose version
+                    '''
+                }
             }
         }
         
@@ -20,19 +22,19 @@ pipeline {
             steps {
                 script {
                     try {
-                        bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
+                        bat 'docker rm -f $(docker ps -aq)'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
                 }
             }
-        } // Closing 'Clear all running docker containers' stage
+        }
         
         stage("Terraform Init") {
             steps {
                 script {
-                    sh 'terraform --version'
-                    sh 'terraform init'
+                    bat 'terraform --version'
+                    bat 'terraform init'
                 }
             }
         }
@@ -40,8 +42,8 @@ pipeline {
         stage("Terraform Apply") {
             steps {
                 script {
-                    sh 'terraform apply -auto-approve'
-                    sh 'terraform output -json > tf-output.json'
+                    bat 'terraform apply -auto-approve'
+                    bat 'terraform output -json > tf-output.json'
                 }
             }
         }
@@ -59,7 +61,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                     bat '''
-                        "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami"
+                        ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=no ubuntu@13.211.134.87 whoami
                     '''
                 }
             }
@@ -67,51 +69,59 @@ pipeline {
         
         stage("Start Docker") {
             steps {
-                bat 'docker-compose up -d'
-                bat 'docker-compose ps'
+                script {
+                    bat 'docker-compose up -d'
+                    bat 'docker-compose ps'
+                }
             }
         }
         
         stage("Run Composer Install") {
             steps {
-                bat 'docker-compose run --rm composer install'
+                script {
+                    bat 'docker-compose run --rm composer install'
+                }
             }
         }
         
         stage("Populate .env file") {
             steps {
-                dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
-                    fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
+                script {
+                    bat "xcopy /s /y C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag/.env ${WORKSPACE}"
                 }
             }
         }
         
         stage("Run Tests") {
             steps {
-                bat 'echo running unit-tests'
-                bat 'docker-compose run --rm artisan test'
+                script {
+                    bat 'echo running unit-tests'
+                    bat 'docker-compose run --rm artisan test'
+                }
             }
         }
     }
     
     post {
         success {
-            bat '''
-                cd C:/ProgramData/Jenkins/.jenkins/workspace/sag
-                rm -rf artifact.zip
-                7z a -r -tzip artifact.zip * -x!node_modules/*
-            '''
-            withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
-                bat'''
-                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@13.211.134.87:/home/ubuntu/artifact"
+            script {
+                bat '''
+                    cd C:/ProgramData/Jenkins/.jenkins/workspace/sag
+                    del /q artifact.zip
+                    7z a -r -tzip artifact.zip * -x!node_modules/*
                 '''
+                withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
+                    bat '''
+                        scp -v -o StrictHostKeyChecking=no -i "${SSH_KEY}" artifact.zip ubuntu@13.211.134.87:/home/ubuntu/artifact
+                    '''
+                }
             }
         }
         
         always {
             script {
-                sh 'docker-compose down --remove-orphans -v'
-                sh 'docker-compose ps'
+                bat 'docker-compose down --remove-orphans -v'
+                bat 'docker-compose ps'
             }
         }
     }
