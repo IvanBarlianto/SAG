@@ -1,8 +1,10 @@
 pipeline {
     agent any
+    
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
     }
+    
     stages {
         stage("Verify tooling") {
             steps {
@@ -13,18 +15,20 @@ pipeline {
                 '''
             }
         }
+        
         stage("Clear all running docker containers") {
             steps {
                 script {
                     try {
-                        // Jalankan perintah bat untuk membersihkan kontainer Docker
                         bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
                     } catch (Exception e) {
                         echo 'No running container to clear up...'
                     }
                 }
             }
-            stage("Terraform Init") {
+        } // Closing 'Clear all running docker containers' stage
+        
+        stage("Terraform Init") {
             steps {
                 script {
                     sh 'terraform --version'
@@ -32,6 +36,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Terraform Apply") {
             steps {
                 script {
@@ -40,6 +45,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Parse Terraform Output") {
             steps {
                 script {
@@ -48,6 +54,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Verify SSH connection to server") {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
@@ -57,17 +64,20 @@ pipeline {
                 }
             }
         }
+        
         stage("Start Docker") {
             steps {
                 bat 'docker-compose up -d'
                 bat 'docker-compose ps'
             }
         }
+        
         stage("Run Composer Install") {
             steps {
                 bat 'docker-compose run --rm composer install'
             }
         }
+        
         stage("Populate .env file") {
             steps {
                 dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
@@ -75,6 +85,7 @@ pipeline {
                 }
             }
         }
+        
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
@@ -82,6 +93,7 @@ pipeline {
             }
         }
     }
+    
     post {
         success {
             bat '''
@@ -95,9 +107,12 @@ pipeline {
                 '''
             }
         }
+        
         always {
-            sh 'docker compose down --remove-orphans -v'
-            sh 'docker compose ps'
+            script {
+                sh 'docker-compose down --remove-orphans -v'
+                sh 'docker-compose ps'
+            }
         }
     }
 }
