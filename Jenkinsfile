@@ -1,6 +1,7 @@
 pipeline {
     agent any
       environment {
+        PATH = "C:/Program Files/7-Zip:$PATH"
         TF_VAR_aws_region = 'us-east-1c'
         TF_VAR_instance_ami = 'ami-04b70fa74e45c3917'
         TF_VAR_instance_type = 't2.micro'
