@@ -35,23 +35,6 @@ pipeline {
                 }
             }
         }
-        
-        stage("Transfer Artifact") {
-            steps {
-                script {
-                    bat '''
-                        cd C:/ProgramData/Jenkins/.jenkins/workspace/sag
-                        del /q artifact.zip
-                        7z a -r -tzip artifact.zip * -x!node_modules/*
-                    '''
-                    withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
-                        bat '''
-                            scp -v -o StrictHostKeyChecking=no -i "${SSH_KEY}" artifact.zip ubuntu@13.211.134.87:/home/ubuntu/artifact
-                        '''
-                    }
-                }
-            }
-        }
     }
     
     post {
