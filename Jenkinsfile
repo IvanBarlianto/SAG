@@ -86,7 +86,9 @@ pipeline {
                 """
                 script {
                     try {
-                        sh "ssh -o StrictHostKeyChecking=no ubuntu@${PUBLIC_IP} sudo chmod 777 /var/www/html/storage -R"
+                        bat """
+                            "C:/Program Files/Git/bin/bash.exe" -c "ssh -o StrictHostKeyChecking=no ubuntu@54.206.55.49 sudo chmod 777 /var/www/html/storage -R"
+                        """
                     } catch (Exception e) {
                         echo 'Some file permissions could not be updated.'
                     }
