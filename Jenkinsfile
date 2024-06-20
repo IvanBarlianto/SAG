@@ -81,7 +81,6 @@ pipeline {
             }
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat '''
-                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.204.179 'sudo mkdir -p /var/www/html'"
                     "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.204.179 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html'"
                 '''
                 script {
