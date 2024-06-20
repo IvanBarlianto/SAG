@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('view_home');
+    return view('view_buku');
 });
 
 //Route untuk Data Buku
