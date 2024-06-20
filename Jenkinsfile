@@ -27,10 +27,18 @@ pipeline {
             }
         }
         
+        stage("Terraform Plan") {
+            steps {
+                script {
+                    bat 'terraform plan -out=tfplan'
+                }
+            }
+        }
+        
         stage("Terraform Apply") {
             steps {
                 script {
-                    bat 'terraform apply -auto-approve'
+                    bat 'terraform apply -auto-approve tfplan'
                     bat 'terraform output -json > tf-output.json'
                 }
             }
