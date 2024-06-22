@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        SONARQUBE_URL = 'http://localhost/:9000' // Adjust the URL if SonarQube is running on a different port or host
+        SONARQUBE_LOGIN = credentials('sonar_sag')
     }
 
     stages {
@@ -43,11 +45,9 @@ pipeline {
                 bat 'docker-compose run --rm artisan test'
             }
         }
-         stage('SonarQube Analysis') {
+         stage('SonarQube analysis') {
             steps {
-                withSonarQubeEnv('sonar_sag') {
-                    bat 'sonar-scanner'
-                }
+                sh 'sonar-scanner'
             }
         }
     }
