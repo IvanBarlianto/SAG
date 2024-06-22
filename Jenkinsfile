@@ -55,6 +55,13 @@ pipeline {
                 bat 'docker-compose run --rm artisan test'
             }
         }
+         stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('sonar_sag') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
     }
 
     post {
