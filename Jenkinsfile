@@ -16,18 +16,6 @@ pipeline {
             }
         }
 
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
-                }
-            }
-        }
-
         stage("Start Docker") {
             steps {
                 bat 'docker-compose up -d'
