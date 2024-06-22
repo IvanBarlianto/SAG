@@ -58,7 +58,7 @@ pipeline {
          stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonar_sag') {
-                    sh 'sonar-scanner'
+                    bat 'sonar-scanner'
                 }
             }
         }
@@ -66,7 +66,6 @@ pipeline {
 
     post {
         always {
-            bat 'docker compose down --remove-orphans -v'
             bat 'docker compose ps'
         }
     }
