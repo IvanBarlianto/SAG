@@ -45,9 +45,10 @@ pipeline {
                 bat 'docker-compose run --rm artisan test'
             }
         }
-         stage('SonarQube analysis') {
-            steps {
-                sh 'sonar-scanner'
+         stage('SonarQube Analysis') {
+            def scannerHome = tool 'SonarScanner';
+                withSonarQubeEnv() {
+                sh "${scannerHome}/bin/sonar-scanner"
             }
         }
     }
