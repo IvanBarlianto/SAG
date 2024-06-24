@@ -12,7 +12,7 @@
 		tata cara administrasi dan organisasi yang berlaku bagi penyelenggaraan sebuah perpustakaan.
     <p>
     <h4>Perpustakaan SAG</h4>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur vehicula congue. Praesent nec augue at nisl
+    Halo ini perpustakaan SAG. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras consectetur vehicula congue. Praesent nec augue at nisl
     scelerisque ultrices a a mauris. Mauris condimentum turpis ligula, eleifend consectetur velit eleifend porta. Praesent
     eu neque bibendum, pretium est ac, pulvinar enim. Sed rutrum vestibulum posuere. Aenean faucibus mauris nibh, nec lobortis
     urna lobortis in. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed egestas
