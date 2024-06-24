@@ -3,6 +3,8 @@ pipeline {
     
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        SONARQUBE_URL = 'http://localhost/:9000' // Adjust the URL if SonarQube is running on a different port or host
+        SONARQUBE_LOGIN = credentials('sonar_sag')
     }
     
     stages {
@@ -80,6 +82,14 @@ pipeline {
                 script {
                     bat 'terraform apply -auto-approve tfplan'
                     bat 'terraform output -json > tf-output.json'
+                }
+            }
+        }
+        
+        stage('SonarQube analysis') {
+            steps {
+                script {
+                    bat 'sonar-scanner'
                 }
             }
         }
