@@ -2,6 +2,8 @@ pipeline {
     agent any
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        SONARQUBE_URL = 'http://localhost/:9000' // Adjust the URL if SonarQube is running on a different port or host
+        SONARQUBE_LOGIN = credentials('sonar_sag')
     }
     stages {
         stage("Verify tooling") {
@@ -11,18 +13,6 @@ pipeline {
                     docker version
                     docker-compose version
                 '''
-            }
-        }
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        // Jalankan perintah bat untuk membersihkan kontainer Docker
-                        bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
-                }
             }
         }
         stage("Verify SSH connection to server") {
@@ -58,6 +48,11 @@ pipeline {
                 bat 'docker-compose run --rm artisan test'
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                bat 'sonar-scanner'
+            }
+        }
     }
     post {
         success {
@@ -87,7 +82,6 @@ pipeline {
             }
         }
         always {
-            sh 'docker compose down --remove-orphans -v'
             sh 'docker compose ps'
         }
     }
