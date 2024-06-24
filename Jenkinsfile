@@ -73,12 +73,12 @@ pipeline {
             }
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat '''
-                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.55.70.75 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html'"
+                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.55.70.75 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html/SAG'"
                 '''
                 script {
                     try {
                         bat '''
-                            "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.55.70.75 sudo chmod 777 /var/www/html/storage -R"
+                            "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.55.70.75 sudo chmod 777 /var/www/html/SAG/storage -R"
                         '''
                     } catch (Exception e) {
                         echo 'Some file permissions could not be updated.'
