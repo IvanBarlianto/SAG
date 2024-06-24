@@ -19,23 +19,12 @@ pipeline {
             }
         }
         
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
-                }
-            }
-        }
         
         stage("Verify SSH connection to server") {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                     bat '''
-                        "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@13.211.204.179 whoami"
+                        "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.106.227.133 whoami"
                     '''
                 }
             }
@@ -111,7 +100,7 @@ pipeline {
             '''
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat'''
-                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.106.252.49:/home/ubuntu/artifact"
+                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.106.227.133:/home/ubuntu/artifact"
                 '''
             }
         }
@@ -119,7 +108,6 @@ pipeline {
         failure {
             script {
                 bat 'terraform destroy -auto-approve'
-                bat 'docker-compose down --remove-orphans -v'
                 bat 'docker-compose ps'
             }
         }
@@ -127,7 +115,6 @@ pipeline {
         always {
             script {
                 bat 'terraform destroy -auto-approve'
-                bat 'docker-compose down --remove-orphans -v'
                 bat 'docker-compose ps'
             }
         }

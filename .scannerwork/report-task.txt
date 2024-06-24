@@ -1,0 +1,6 @@
+projectKey=sag-jenkins
+serverUrl=http://localhost:9000
+serverVersion=10.5.1.90531
+dashboardUrl=http://localhost:9000/dashboard?id=sag-jenkins
+ceTaskId=e6fd6855-8801-4bbb-9e76-61e577aa8b45
+ceTaskUrl=http://localhost:9000/api/ce/task?id=e6fd6855-8801-4bbb-9e76-61e577aa8b45
