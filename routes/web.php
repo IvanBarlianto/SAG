@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('view_home');
 });
 
 //Route untuk Data Buku
@@ -44,3 +44,4 @@ Route::post('/pinjam/tambah','PinjamController@pinjamtambah');
 Route::get('/pinjam/hapus/{id_pinjam}','PinjamController@pinjamhapus');
 Route::put('/pinjam/edit/{id_pinjam}', 'PinjamController@pinjamedit');
 
+Route::get('/example', [App\Http\Controllers\ExampleController::class, 'index']);
