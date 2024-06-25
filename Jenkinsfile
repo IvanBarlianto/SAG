@@ -12,6 +12,7 @@ pipeline {
                     docker info
                     docker version
                     docker-compose version
+                    terraform --version
                 '''
             }
         }
@@ -39,6 +40,28 @@ pipeline {
             steps {
                 dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
                     fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
+                }
+            }
+        }
+        stage("Terraform Init") {
+            steps {
+                script {
+                    bat 'terraform init'
+                }
+            }
+        }
+        stage("Terraform Plan") {
+            steps {
+                script {
+                    bat 'terraform plan -out=tfplan'
+                }
+            }
+        }
+        stage("Terraform Apply") {
+            steps {
+                script {
+                    bat 'terraform apply -auto-approve tfplan'
+                    bat 'terraform output -json > tf-output.json'
                 }
             }
         }
@@ -82,7 +105,7 @@ pipeline {
             }
         }
         always {
-            sh 'docker compose ps'
+            bat 'docker compose ps'
         }
     }
 }
