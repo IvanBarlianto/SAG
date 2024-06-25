@@ -14,7 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('index');
+    return view('view_home');
+Route::get('/', 'BukuController@bukutampil');
+Route::post('/tambah','BukuController@bukutambah');
+Route::get('/hapus/{id_buku}','BukuController@bukuhapus');
+Route::put('/edit/{id_buku}', 'BukuController@bukuedit');
 });
 
 //Route untuk Data Buku
