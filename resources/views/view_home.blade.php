@@ -18,7 +18,7 @@
     urna lobortis in. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Sed egestas
     nibh erat, ac vulputate eros gravida ut. In iaculis iaculis blandit. Curabitur a dignissim sem, eu iaculis ex. Vestibulum in
     lacinia tortor. Donec ornare velit sit amet ante facilisis, eget accumsan dui auctor.
-    
+    </p>
     <div class="container">
         <h3 class="text-center">Daftar Buku Perpustakaan SAG</h3>
     
@@ -212,6 +212,8 @@
     
         document.addEventListener('DOMContentLoaded', renderBooks);
     </script>
+    <p> <br>
+    </p>
     <p>
         <h4>Perpustakaan Menurut UU NO 43. THN. 2007</h4>
         Perpustakaan adalah institusi yang mengumpulkan pengetahuan tercetak dan terekam, mengelolanya dengan cara khusus guna
