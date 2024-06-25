@@ -212,7 +212,6 @@
     
         document.addEventListener('DOMContentLoaded', renderBooks);
     </script>
-    
     <p>
         <h4>Perpustakaan Menurut UU NO 43. THN. 2007</h4>
         Perpustakaan adalah institusi yang mengumpulkan pengetahuan tercetak dan terekam, mengelolanya dengan cara khusus guna
