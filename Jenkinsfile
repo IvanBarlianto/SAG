@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        SONARQUBE_URL = 'http://localhost/:9000' // Adjust the URL if SonarQube is running on a different port or host
+        SONARQUBE_LOGIN = credentials('sonar_sag')
     }
 
     stages {
@@ -12,9 +14,11 @@ pipeline {
                     docker info
                     docker version
                     docker-compose version
+                    terraform --version
                 '''
             }
         }
+<<<<<<< HEAD
 
         stage("Clear all running docker containers") {
             steps {
@@ -29,6 +33,9 @@ pipeline {
         }
 
         stage('Run SSH Command') {
+=======
+        stage("Verify SSH connection to server") {
+>>>>>>> Ivan
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                     bat '''
@@ -58,11 +65,41 @@ pipeline {
                 }
             }
         }
+<<<<<<< HEAD
 
+=======
+        stage("Terraform Init") {
+            steps {
+                script {
+                    bat 'terraform init'
+                }
+            }
+        }
+        stage("Terraform Plan") {
+            steps {
+                script {
+                    bat 'terraform plan -out=tfplan'
+                }
+            }
+        }
+        stage("Terraform Apply") {
+            steps {
+                script {
+                    bat 'terraform apply -auto-approve tfplan'
+                    bat 'terraform output -json > tf-output.json'
+                }
+            }
+        }
+>>>>>>> Ivan
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
                 bat 'docker-compose run --rm artisan test'
+            }
+        }
+        stage('SonarQube analysis') {
+            steps {
+                bat 'sonar-scanner'
             }
         }
     }
@@ -75,18 +112,30 @@ pipeline {
                 7z a -r -tzip artifact.zip * -x!node_modules/*
             '''
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
+<<<<<<< HEAD
                 bat '''
+=======
+                bat'''
+>>>>>>> Ivan
                     "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.27.164.225:/home/ubuntu/artifact"
                 '''
             }
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat '''
+<<<<<<< HEAD
                     "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html'"
+=======
+                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html/SAG'"
+>>>>>>> Ivan
                 '''
                 script {
                     try {
                         bat '''
+<<<<<<< HEAD
                             "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 sudo chmod 777 /var/www/html/storage -R"
+=======
+                            "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 sudo chmod 777 /var/www/html/SAG/storage -R"
+>>>>>>> Ivan
                         '''
                     } catch (Exception e) {
                         echo 'Some file permissions could not be updated.'
@@ -96,7 +145,10 @@ pipeline {
         }
 
         always {
+<<<<<<< HEAD
             bat 'docker compose down --remove-orphans -v'
+=======
+>>>>>>> Ivan
             bat 'docker compose ps'
         }
     }
