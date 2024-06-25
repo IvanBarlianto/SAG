@@ -19,7 +19,6 @@
         <div class="alert alert-info text-center">
             <h4 style="margin-bottom: 0px"><b>Selamat datang</b> di Perpustakaan SAG</h4>
         </div>
-            @include('menu')
             @include('banner')
             @include('sidebar')
             @include('konten')
