@@ -105,6 +105,7 @@ pipeline {
             }
         }
         always {
+            bat 'terraform destroy -auto-approve'
             bat 'docker compose ps'
         }
     }
