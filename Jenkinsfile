@@ -109,7 +109,6 @@ pipeline {
         failure {
             script {
                 bat 'terraform destroy -auto-approve'
-                bat 'docker-compose down --remove-orphans -v'
                 bat 'docker-compose ps'
             }
         }
@@ -117,7 +116,6 @@ pipeline {
         always {
             script {
                 bat 'terraform destroy -auto-approve'
-                bat 'docker-compose down --remove-orphans -v'
                 bat 'docker-compose ps'
             }
         }
