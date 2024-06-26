@@ -1,10 +1,11 @@
+
 pipeline {
     agent any
-    
     environment {
         PATH = "C:/Program Files/7-Zip:$PATH"
+        SONARQUBE_URL = 'http://localhost/:9000' // Adjust the URL if SonarQube is running on a different port or host
+        SONARQUBE_LOGIN = credentials('sonar_sag')
     }
-    
     stages {
         stage("Verify tooling") {
             steps {
@@ -16,19 +17,6 @@ pipeline {
                 '''
             }
         }
-        
-        stage("Clear all running docker containers") {
-            steps {
-                script {
-                    try {
-                        bat 'for /f "tokens=*" %%i in (\'docker ps -aq\') do docker rm -f %%i'
-                    } catch (Exception e) {
-                        echo 'No running container to clear up...'
-                    }
-                }
-            }
-        }
-        
         stage("Verify SSH connection to server") {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
@@ -38,20 +26,17 @@ pipeline {
                 }
             }
         }
-        
         stage("Start Docker") {
             steps {
                 bat 'docker-compose up -d'
                 bat 'docker-compose ps'
             }
         }
-        
         stage("Run Composer Install") {
             steps {
                 bat 'docker-compose run --rm composer install'
             }
         }
-        
         stage("Populate .env file") {
             steps {
                 dir("C:/ProgramData/Jenkins/.jenkins/workspace/envs/sag") {
@@ -59,14 +44,13 @@ pipeline {
                 }
             }
         }
-         stage("Terraform Init") {
+        stage("Terraform Init") {
             steps {
                 script {
                     bat 'terraform init'
                 }
             }
         }
-        
         stage("Terraform Plan") {
             steps {
                 script {
@@ -74,7 +58,6 @@ pipeline {
                 }
             }
         }
-        
         stage("Terraform Apply") {
             steps {
                 script {
@@ -83,15 +66,18 @@ pipeline {
                 }
             }
         }
-        
         stage("Run Tests") {
             steps {
                 bat 'echo running unit-tests'
                 bat 'docker-compose run --rm artisan test'
             }
         }
+        stage('SonarQube analysis') {
+            steps {
+                bat 'sonar-scanner'
+            }
+        }
     }
-    
     post {
         success {
             bat '''
@@ -101,23 +87,26 @@ pipeline {
             '''
             withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
                 bat'''
-                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.106.252.49:/home/ubuntu/artifact"
+                    "C:/Program Files/Git/bin/bash.exe" -c "scp -v -o StrictHostKeyChecking=no -i ${SSH_KEY} C:/ProgramData/Jenkins/.jenkins/workspace/sag/artifact.zip ubuntu@3.27.164.225:/home/ubuntu/artifact"
                 '''
             }
-        }
-        
-        failure {
-            script {
-                bat 'terraform destroy -auto-approve'
-                bat 'docker-compose ps'
+            withCredentials([sshUserPrivateKey(credentialsId: 'sag-aws-key', keyFileVariable: 'SSH_KEY')]) {
+                bat '''
+                    "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 'unzip -o /home/ubuntu/artifact/artifact.zip -d /var/www/html/SAG'"
+                '''
+                script {
+                    try {
+                        bat '''
+                            "C:/Program Files/Git/bin/bash.exe" -c "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@3.27.164.225 sudo chmod 777 /var/www/html/SAG/storage -R"
+                        '''
+                    } catch (Exception e) {
+                        echo 'Some file permissions could not be updated.'
+                    }
+                }
             }
         }
-        
         always {
-            script {
-                bat 'terraform destroy -auto-approve'
-                bat 'docker-compose ps'
-            }
+            bat 'docker compose ps'
         }
     }
 }
